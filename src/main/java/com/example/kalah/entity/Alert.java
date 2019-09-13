@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Alert {
-    private String user;
+    private User user;
     private String message;
     private String status;
 }

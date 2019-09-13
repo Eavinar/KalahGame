@@ -16,7 +16,7 @@ public interface GameService {
      */
     void addUser(User user);
 
-    void removeUser(String user);
+    GameStatus removeUser(String userName);
 
     GameStatus getGameStatus();
 

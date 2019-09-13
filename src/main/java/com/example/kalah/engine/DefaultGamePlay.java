@@ -4,7 +4,9 @@ import com.example.kalah.entity.*;
 import com.example.kalah.exceptions.IllegalMoveException;
 import com.example.kalah.repository.GameRepository;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DefaultGamePlay implements GamePlay {
@@ -47,19 +49,19 @@ public class DefaultGamePlay implements GamePlay {
      * {@inheritDoc}
      */
     @Override
-    public GameBoard move(final UserStep userStep) {
+    public GameBoard move(final User user, final String stepId) {
         // checking whether it is good to go on
         if (gameBoard.getGameStatus() == GameStatus.GOING_ON) {
             User firstUser = gameRepository.getFirstUser();
             // counting in web page starts from 1, so -1 here.
-            int selectedPitIndex = Integer.parseInt(userStep.getStepId()) - 1;
+            int selectedPitIndex = Integer.parseInt(stepId) - 1;
             Pit selectedPit = gameBoard.getPits().get(selectedPitIndex);
             int stonesInPit = selectedPit.getStonesCount();
             // based on user turn defining virtual index of the store.
             int storeIndex = (getTurn() == firstUser ? 6 : 0);
 
-            if (!userStep.getUser().equals(getTurn().getName())) {
-                throw new IllegalMoveException("It is not " + userStep.getUser() + " turn");
+            if (user != getTurn()) {
+                throw new IllegalMoveException("It is not " + user.getName() + " turn");
             }
 
             // if owner is who's turn now.
@@ -93,10 +95,14 @@ public class DefaultGamePlay implements GamePlay {
                         // Because of we are checking after the adding last stone to the pit.
                         if (stonesInLastPit == 1 && lastPit.getUser() == getTurn()) {
                             // getting store details for the user.
-                            // should add check for Optional.
-                            Store userStore = gameBoard.getStores().stream()
-                                    .filter(store -> store.getUser() == getTurn()).findAny().get();
-
+                            Optional<Store> userStoreOptional = gameBoard.getStores().stream()
+                                    .filter(store -> store.getUser() == getTurn()).findAny();
+                            Store userStore = null;
+                            if (userStoreOptional.isPresent()) {
+                                userStore = userStoreOptional.get();
+                            } else {
+                                throw new IllegalMoveException("Store does not exist");
+                            }
                             // Updating user's store with adding oposite pit stones
                             int stonesInStore = userStore.getStonesCount();
                             Pit oppositePit = gameBoard.getPits().get(11 - nextPitIndex);
@@ -152,9 +158,8 @@ public class DefaultGamePlay implements GamePlay {
     /**
      * Method adds stones left in the user's pit into the store.
      *
-     * @param user for whom calculation will be.
+     * @param user      for whom calculation will be.
      * @param userIndex of store for the user.
-     *
      * @return total of the stones user has
      */
     private int calculateUserStones(final User user, final int userIndex) {
@@ -175,7 +180,6 @@ public class DefaultGamePlay implements GamePlay {
      * If yes returns {@code true}, otherwiae {@code false}.
      *
      * @param user is owner of the pits.
-     *
      * @return whether game over for the user.
      */
     private boolean isGameOverByUser(final User user) {
@@ -199,10 +203,11 @@ public class DefaultGamePlay implements GamePlay {
     }
 
     private void addStoneToStore(final User user) {
-        // should add check for Optional.
-        Store userStore = gameBoard.getStores().stream()
-                .filter(store -> store.getUser() == user).findAny().get();
-        int stoneCount = userStore.getStonesCount();
-        userStore.setStonesCount(stoneCount + 1);
+        Optional<Store> userStore = gameBoard.getStores().stream()
+                .filter(store -> store.getUser() == user).findAny();
+
+        userStore.ifPresentOrElse(
+                store -> store.setStonesCount(store.getStonesCount() + 1),
+                () -> {throw new IllegalMoveException("Store does not exist");});
     }
 }

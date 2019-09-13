@@ -18,6 +18,8 @@ import org.mockito.junit.VerificationCollector;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
@@ -43,9 +45,8 @@ public class GameServiceTest {
 
     @Before
     public void setUp() {
-        String userName = "user1";
-        user = new User(userName);
-        userStep = new UserStep(userName, "1");
+        user = new User("user1");
+        userStep = new UserStep(user, "1");
     }
 
     @Test
@@ -79,7 +80,8 @@ public class GameServiceTest {
 
     @Test
     public void moveTest() {
+        when(gameRepository.getUsers()).thenReturn(Arrays.asList(user, user));
         gameService.move(userStep);
-        verify(gamePlay, times(1)).move(userStep);
+        verify(gamePlay, times(1)).move(userStep.getUser(), userStep.getStepId());
     }
 }

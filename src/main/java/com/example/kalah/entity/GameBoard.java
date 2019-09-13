@@ -16,9 +16,11 @@ public class GameBoard {
     private List<Pit> pits = new ArrayList<>(12);
     private List<Store> stores = new ArrayList<>(2);
     private GameStatus gameStatus;
+    private String message;
 
     public void setGameStatus(final GameStatus gameStatus) {
         this.gameStatus = gameStatus;
+        this.message = gameStatus.getMessage();
     }
 
     /**

@@ -6,8 +6,11 @@ import com.example.kalah.entity.GameStatus;
 import com.example.kalah.entity.User;
 import com.example.kalah.entity.UserStep;
 import com.example.kalah.exceptions.ConnectedUserOutOfAllowanceException;
+import com.example.kalah.exceptions.IllegalMoveException;
 import com.example.kalah.repository.GameRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Responsible for the business logic of the game.
@@ -34,8 +37,13 @@ public class DefaultGameService implements GameService {
     }
 
     @Override
-    public void removeUser(final String user) {
-        gameRepository.removeUser(user);
+    public GameStatus removeUser(final String userName) {
+        gameRepository.removeUser(userName);
+        if (activeUsersCount() < 2) {
+            setGameStatus(GameStatus.DISCONNECTED);
+            resetBoard();
+        }
+        return getGameStatus();
     }
 
     @Override
@@ -49,7 +57,7 @@ public class DefaultGameService implements GameService {
     @Override
     public void setGameStatus(final GameStatus disconnected) {
         gameBoard.setGameStatus(disconnected);
-        reset();
+        resetBoard();
     }
 
     /**
@@ -82,7 +90,13 @@ public class DefaultGameService implements GameService {
      */
     @Override
     public GameBoard move(final UserStep userStep) {
-        return gamePlay.move(userStep);
+        Optional<User> player = gameRepository.getUsers().stream()
+                .filter(user -> user.getName().equals(userStep.getUser().getName())).findAny();
+        if (player.isPresent()) {
+            return gamePlay.move(player.get(), userStep.getStepId());
+        } else {
+            throw new IllegalMoveException("User does not exist");
+        }
     }
 
     @Override
@@ -93,7 +107,7 @@ public class DefaultGameService implements GameService {
     /**
      * Resetting game to start from scratch.
      */
-    private void reset() {
+    private void resetBoard() {
         gameRepository.removeUsers();
         gameBoard.resetBoard();
     }

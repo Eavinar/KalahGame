@@ -13,6 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserStep {
-    private String user;
+    private User user;
     private String stepId;
 }

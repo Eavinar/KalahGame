@@ -34,13 +34,11 @@ public class GamePlayTest {
 
     @Before
     public void setUp() {
-        String user1Name = "user1";
-        String user2Name = "user2";
-        User user1 = new User(user1Name);
-        User user2 = new User(user2Name);
+        User user1 = new User("user1");
+        User user2 = new User("user2");
         List<User> userList = Arrays.asList(user1, user2);
-        user1Step = new UserStep(user1Name, "5");
-        user2Step = new UserStep(user2Name, "7");
+        user1Step = new UserStep(user1, "5");
+        user2Step = new UserStep(user2, "7");
         when(gameRepository.getUsers()).thenReturn(userList);
         when(gameRepository.getFirstUser()).thenReturn(user1);
         when(gameRepository.getSecondUser()).thenReturn(user2);
@@ -57,7 +55,7 @@ public class GamePlayTest {
     @Test
     public void moveTest(){
         gamePlay.start();
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
         assertThat(gamePlay.getGameBoard().getGameStatus()).isEqualTo(GameStatus.GOING_ON);
     }
 
@@ -70,17 +68,17 @@ public class GamePlayTest {
 
         gameBoard.getStores().get(0).setStonesCount(20);
         gameBoard.getStores().get(1).setStonesCount(10);
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
         assertThat(gamePlay.getGameBoard().getGameStatus()).isEqualTo(GameStatus.USER1_WINS);
 
         gameBoard.getStores().get(0).setStonesCount(10);
         gameBoard.getStores().get(1).setStonesCount(20);
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
         assertThat(gamePlay.getGameBoard().getGameStatus()).isEqualTo(GameStatus.USER2_WINS);
 
         gameBoard.getStores().get(0).setStonesCount(10);
         gameBoard.getStores().get(1).setStonesCount(10);
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
         assertThat(gamePlay.getGameBoard().getGameStatus()).isEqualTo(GameStatus.DRAW);
     }
 
@@ -90,7 +88,7 @@ public class GamePlayTest {
         gamePlay.start();
         GameBoard gameBoard = gamePlay.getGameBoard();
         gameBoard.getPits().get(4).setStonesCount(20);
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
 
         assertThat(gameBoard.getPits().get(0).getStonesCount()).isEqualTo(7);
         assertThat(gameBoard.getPits().get(1).getStonesCount()).isEqualTo(7);
@@ -115,8 +113,8 @@ public class GamePlayTest {
         gamePlay.start();
         GameBoard gameBoard = gamePlay.getGameBoard();
         gameBoard.getPits().get(6).setStonesCount(20);
-        gamePlay.move(user1Step);
-        gamePlay.move(user2Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
+        gamePlay.move(user2Step.getUser(), user2Step.getStepId());
 
         assertThat(gameBoard.getPits().get(0).getStonesCount()).isEqualTo(8);
         assertThat(gameBoard.getPits().get(1).getStonesCount()).isEqualTo(8);
@@ -143,7 +141,7 @@ public class GamePlayTest {
         gameBoard.getPits().get(4).setStonesCount(1);
         gameBoard.getPits().get(5).setStonesCount(0);
         gameBoard.getPits().get(6).setStonesCount(10);
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
         assertThat(gameBoard.getStores().get(0).getStonesCount()).isEqualTo(11);
     }
 
@@ -151,12 +149,12 @@ public class GamePlayTest {
     public void eatOppositePitForUser2Test(){
         gamePlay.start();
         GameBoard gameBoard = gamePlay.getGameBoard();
-        gamePlay.move(user1Step);
+        gamePlay.move(user1Step.getUser(), user1Step.getStepId());
 
         gameBoard.getPits().get(6).setStonesCount(1);
         gameBoard.getPits().get(7).setStonesCount(0);
         gameBoard.getPits().get(4).setStonesCount(10);
-        gamePlay.move(user2Step);
+        gamePlay.move(user2Step.getUser(), user2Step.getStepId());
         assertThat(gameBoard.getStores().get(1).getStonesCount()).isEqualTo(11);
     }
 }

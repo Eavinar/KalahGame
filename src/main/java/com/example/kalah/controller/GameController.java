@@ -54,15 +54,14 @@ public class GameController {
     /**
      * Method disconnects user.
      *
-     * @param user which should be disconnected.
+     * @param userName which should be disconnected.
      *
      * @return message base on disconnect action.
      */
     @MessageMapping("/disconnect")
     @SendTo("/topic/disconnect")
-    public String disconnect(final String user) {
-        gameService.removeUser(user);
-        System.out.println(gameService.activeUsersCount());
+    public String disconnect(final String userName) {
+        gameService.removeUser(userName);
         if(gameService.activeUsersCount() < 2){
             gameService.setGameStatus(GameStatus.DISCONNECTED);
         }
@@ -99,7 +98,7 @@ public class GameController {
     @SendTo("/topic/messages")
     public Alert boardIsBusy(final User user) {
         Alert alert = new Alert();
-        alert.setUser(user.getName());
+        alert.setUser(user);
         alert.setMessage("Board is busy, please wait...");
         alert.setStatus("FAIL");
         return alert;

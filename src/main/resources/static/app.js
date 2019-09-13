@@ -21,7 +21,7 @@ $(document).ready(function () {
 
             stompClient.subscribe('/topic/messages', function (data) {
                 data = JSON.parse(data.body);
-                if (user == data.user) {
+                if (user == data.user.name) {
                     if (data.status == "FAIL") {
                         window.location.replace("http://localhost:8080/");
                     }
@@ -47,6 +47,7 @@ $(document).ready(function () {
         if (stompClient !== null) {
             stompClient.send("/app/disconnect", {}, user);
             stompClient.disconnect();
+            window.location.replace("http://localhost:8080/");
         }
         setConnected(false);
     }
@@ -89,6 +90,6 @@ $(document).ready(function () {
     }, false);
 
     $("input.board").on('click', function () {
-        stompClient.send("/app/updateBoard", {}, JSON.stringify({"user": user, "stepId": this.id}));
+        stompClient.send("/app/updateBoard", {}, JSON.stringify({"user": {"name" : user}, "stepId": this.id}));
     });
 });

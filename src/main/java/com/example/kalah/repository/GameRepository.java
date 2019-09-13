@@ -33,5 +33,5 @@ public interface GameRepository {
 
     void removeUsers();
 
-    void removeUser(String player);
+    void removeUser(String userName);
 }
