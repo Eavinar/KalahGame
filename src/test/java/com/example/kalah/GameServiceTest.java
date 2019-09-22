@@ -57,8 +57,8 @@ public class GameServiceTest {
 
     @Test
     public void removeUserTest() {
-        gameService.removeUser(user.getName());
-        verify(gameRepository, times(1)).removeUser(user.getName());
+        gameService.removeUser(user);
+        verify(gameRepository, times(1)).removeUser(user);
     }
 
     @Test

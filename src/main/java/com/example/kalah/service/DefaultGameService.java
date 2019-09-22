@@ -37,8 +37,8 @@ public class DefaultGameService implements GameService {
     }
 
     @Override
-    public GameStatus removeUser(final String userName) {
-        gameRepository.removeUser(userName);
+    public GameStatus removeUser(final User user) {
+        gameRepository.removeUser(user);
         if (activeUsersCount() < 2) {
             setGameStatus(GameStatus.DISCONNECTED);
             resetBoard();
@@ -105,11 +105,18 @@ public class DefaultGameService implements GameService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GameBoard getGameBoard(){
+        return gameBoard;
+    }
+
+    /**
      * Resetting game to start from scratch.
      */
     private void resetBoard() {
         gameRepository.removeUsers();
         gameBoard.resetBoard();
     }
-
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @Component
 public class GameBoard {
-
     private List<Pit> pits = new ArrayList<>(12);
     private List<Store> stores = new ArrayList<>(2);
     private GameStatus gameStatus;

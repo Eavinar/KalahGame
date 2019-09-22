@@ -10,7 +10,7 @@ public enum GameStatus {
     GOING_ON("Game is going on"),
     WAITING_FOR_ANOTHER_USER("Waiting for the another user.."),
     NOT_STARTED("No user connected"),
-    STARTED("Game started.."),
+    STARTED("Game has been started.."),
     DISCONNECTED("Opponent disconnected. You win");
 
     private final String message;

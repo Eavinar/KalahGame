@@ -1,4 +1,4 @@
-.board {
+.board, .board input{
     width: 100px;
     height: 60px;
     text-align: center;
@@ -13,12 +13,12 @@
     font-size: 30px !important;
 }
 
-.schema-1{
+.schema-1, .schema-1.board input{
     background: #80700087;
     border-radius: 40px;
 }
 
-.schema-2 {
+.schema-2, .schema-2.board input {
     background-color: #ffffff;
     border-radius: 40px;
 }

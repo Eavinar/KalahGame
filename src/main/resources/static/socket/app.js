@@ -23,7 +23,7 @@ $(document).ready(function () {
                 data = JSON.parse(data.body);
                 if (user == data.user.name) {
                     if (data.status == "FAIL") {
-                        window.location.replace("http://localhost:8080/");
+                        location.reload();
                     }
                     alert(data.message);
                 }
@@ -34,8 +34,8 @@ $(document).ready(function () {
             });
 
             stompClient.subscribe('/topic/disconnect', function (message) {
-                if (message.body.indexOf("disconnect") >= 0) {
-                    alert(message.body);
+                if (message.body.indexOf("DISCONNECTED") >= 0) {
+                    alert("User disconnected");
                 }
             });
 
@@ -45,19 +45,21 @@ $(document).ready(function () {
 
     function disconnect() {
         if (stompClient !== null) {
-            stompClient.send("/app/disconnect", {}, user);
+            stompClient.send("/app/disconnect", {}, JSON.stringify({'name': user}));
             stompClient.disconnect();
-            window.location.replace("http://localhost:8080/");
+            location.reload();
         }
         setConnected(false);
     }
 
     function showMessage(message) {
-        $("#board").html(message);
+        var message = JSON.parse(message);
+        $("#board").html(message.body);
     }
 
     function updateBoard(data) {
         data = JSON.parse(data);
+        data = data.body;
 
         for (i = 0; i < data.pits.length; i++) {
             var boardId = i + 1;

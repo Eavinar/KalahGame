@@ -4,6 +4,8 @@ import com.example.kalah.entity.*;
 import com.example.kalah.exceptions.ConnectedUserOutOfAllowanceException;
 import com.example.kalah.exceptions.IllegalMoveException;
 import com.example.kalah.service.GameService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -13,59 +15,52 @@ import org.springframework.stereotype.Controller;
  * Class is responsible for the handling socket requests and routing them.
  */
 @Controller
-public class GameController {
+public class SocketController implements MainController {
     private final GameService gameService;
 
-    public GameController(GameService gameService) {
+    public SocketController(GameService gameService) {
         this.gameService = gameService;
     }
 
     /**
-     * Method connects user to the game.
-     *
-     * @param user mapped information about user.
-     *
-     * @return the status after the connection.
+     * {@inheritDoc}
      */
     @MessageMapping("/game")
     @SendTo("/topic/connection")
-    public String connect(final User user) {
+    public ResponseEntity<String> connect(final User user) {
         gameService.addUser(user);
         GameStatus gameStatus = gameService.getGameStatus();
         if (gameStatus == GameStatus.STARTED) {
             gameService.startGame();
         }
-        return gameStatus.getMessage();
+        return new ResponseEntity<>(gameStatus.getMessage(), HttpStatus.OK);
     }
 
     /**
-     * Method handles user's move and interacts with back layers.
-     *
-     * @param userStep holds information about user and user's move.
-     *
-     * @return updated game board.
+     * {@inheritDoc}
      */
     @MessageMapping("/updateBoard")
     @SendTo("/topic/move")
-    public GameBoard userMove(final UserStep userStep) {
-        return gameService.move(userStep);
+    public ResponseEntity<GameBoard> userMove(final UserStep userStep) {
+        return new ResponseEntity<>(gameService.move(userStep), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<GameBoard> gameStatus() {
+        return null;
     }
 
     /**
-     * Method disconnects user.
-     *
-     * @param userName which should be disconnected.
-     *
-     * @return message base on disconnect action.
+     * {@inheritDoc}
      */
     @MessageMapping("/disconnect")
     @SendTo("/topic/disconnect")
-    public String disconnect(final String userName) {
-        gameService.removeUser(userName);
+    public ResponseEntity<GameStatus> disconnect(final User user) {
+        gameService.removeUser(user);
         if(gameService.activeUsersCount() < 2){
             gameService.setGameStatus(GameStatus.DISCONNECTED);
         }
-        return gameService.getGameStatus().getMessage();
+        return new ResponseEntity<>(gameService.getGameStatus(), HttpStatus.OK);
     }
 
     /**
@@ -78,10 +73,10 @@ public class GameController {
      */
     @MessageExceptionHandler(IllegalMoveException.class)
     @SendTo("/topic/messages")
-    public Alert illegalMove(final UserStep userStep) {
+    public Alert illegalMove(final UserStep userStep, final Exception exception) {
         Alert alert = new Alert();
         alert.setUser(userStep.getUser());
-        alert.setMessage("It is not your turn");
+        alert.setMessage(exception.getMessage());
         alert.setStatus("OK");
         return alert;
     }
@@ -96,10 +91,10 @@ public class GameController {
      */
     @MessageExceptionHandler(ConnectedUserOutOfAllowanceException.class)
     @SendTo("/topic/messages")
-    public Alert boardIsBusy(final User user) {
+    public Alert boardIsBusy(final User user, final Exception exception) {
         Alert alert = new Alert();
         alert.setUser(user);
-        alert.setMessage("Board is busy, please wait...");
+        alert.setMessage(exception.getMessage());
         alert.setStatus("FAIL");
         return alert;
     }

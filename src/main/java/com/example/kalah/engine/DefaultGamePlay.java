@@ -4,13 +4,11 @@ import com.example.kalah.entity.*;
 import com.example.kalah.exceptions.IllegalMoveException;
 import com.example.kalah.repository.GameRepository;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class DefaultGamePlay implements GamePlay {
-
     private final GameRepository gameRepository;
     private final GameBoard gameBoard;
     // indicates which users turn, now.

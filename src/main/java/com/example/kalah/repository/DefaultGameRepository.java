@@ -4,7 +4,6 @@ import com.example.kalah.entity.User;
 import com.example.kalah.exceptions.ConnectedUserOutOfAllowanceException;
 import com.example.kalah.exceptions.IllegalMoveException;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,9 @@ public class DefaultGameRepository implements GameRepository {
      */
     @Override
     public void addUser(final User user) {
+        if(userList.contains(user)){
+            throw new ConnectedUserOutOfAllowanceException("User with this name exists");
+        }
         if (getUsersCount() > 1) {
             throw new ConnectedUserOutOfAllowanceException("Users count more than 2");
         }
@@ -66,7 +68,7 @@ public class DefaultGameRepository implements GameRepository {
     }
 
     @Override
-    public void removeUser(String userName) {
-        userList.removeIf(user -> user.getName().equals(userName));
+    public void removeUser(User player) {
+        userList.removeIf(user -> user.equals(player));
     }
 }

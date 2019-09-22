@@ -1,16 +1,14 @@
 package com.example.kalah.repository;
 
 import com.example.kalah.entity.User;
-import com.example.kalah.exceptions.ConnectedUserOutOfAllowanceException;
 
 import java.util.List;
 
 public interface GameRepository {
     /**
      * Method adds user to the repository. Before adding validates if threshold from 2 people exceeded.
-     *     *
+     *
      * @param user which is going to be added.
-     * @exception ConnectedUserOutOfAllowanceException if threshold exceeded.
      */
     void addUser(User user);
 
@@ -33,5 +31,5 @@ public interface GameRepository {
 
     void removeUsers();
 
-    void removeUser(String userName);
+    void removeUser(User user);
 }

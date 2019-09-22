@@ -16,7 +16,7 @@ public interface GameService {
      */
     void addUser(User user);
 
-    GameStatus removeUser(String userName);
+    GameStatus removeUser(User user);
 
     GameStatus getGameStatus();
 
@@ -37,11 +37,18 @@ public interface GameService {
     /**
      * Method makes move for the user and updates board.
      *
-     * @param userStep hold user and move information
+     * @param userStep hold user and move information.
      *
-     * @return board condition after making the move
+     * @return board condition after making the move.
      */
     GameBoard move(UserStep userStep);
 
     int activeUsersCount();
+
+    /**
+     * Method returns current game board.
+     *
+     * @return current board condition.
+     */
+    GameBoard getGameBoard();
 }

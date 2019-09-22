@@ -38,7 +38,7 @@ public class GameRepositoryTest {
     @Test
     public void removeUserTest() {
         gameRepository.addUser(user1);
-        gameRepository.removeUser(user1.getName());
+        gameRepository.removeUser(user1);
         assertThat(gameRepository.getUsersCount()).isEqualTo(0);
     }
 
@@ -46,7 +46,7 @@ public class GameRepositoryTest {
     public void updateGameStatusWhenUserCountExceedsLimitTest() {
         gameRepository.addUser(user1);
         gameRepository.addUser(user2);
-        gameRepository.addUser(new User());
+        gameRepository.addUser(new User("user3"));
     }
 
     @Test
