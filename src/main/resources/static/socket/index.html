@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Kalah Game</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/socket/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/socket/app.js"></script>
+</head>
+<body>
+<div id="main-content" class="container-fluid">
+
+    <div class="jumbotron text-center">
+        <h2 class="display-4"><b>Welcome to the game!</b></h2>
+        <p class="lead">Please ask your opponent to join the game. In order to do it new window can be opened either in
+            incognito mode or in different browser</p>
+        <hr class="my-4">
+
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="name">Username: </label>
+                        <input type="text" id="name" class="form-control" placeholder="Username...">
+                    </div>
+                    <div class="form-group">
+                        <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                        <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-50">
+            <div class="col-md-12">
+                <div id="board"></div>
+            </div>
+        </div>
+        <div class="row mt-50">
+            <div class="col-md-12 table-responsive">
+                <table id="gameBoard" class="table-center">
+                    <tr>
+                        <td rowspan="2" class="schema-1 board store">
+                            <input id="u1" type="text" class="schema-1" value="0" disabled>
+                        </td>
+                        <td>
+                            <input id="6" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="5" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="4" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="3" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="2" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="1" class="schema-1 board" type="button" value="6">
+                        </td>
+                        <td rowspan="2" class="schema-2 board store">
+                            <input id="u2" class="schema-2" type="text" value="0" disabled>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="7" class="schema-2 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="8" class="schema-2 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="9" class="schema-2 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="10" class="schema-2 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="11" class="schema-2 board" type="button" value="6">
+                        </td>
+                        <td>
+                            <input id="12" class="schema-2 board" type="button" value="6">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p class="lead mt-50">
+            <a class="btn btn-link" href="https://en.wikipedia.org/wiki/Kalah" target="_blank">
+                About Kalah game
+            </a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
